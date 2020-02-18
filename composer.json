@@ -1,0 +1,10 @@
+{
+    "name":"novokhatsky/db",
+    "description":"wrapper for mysql",
+    "require":{
+        "php":"^5.6"
+    },
+    "autoload":{
+        "psr-4":{"novokhatsky\\db\\":"/src"}
+    }
+}
