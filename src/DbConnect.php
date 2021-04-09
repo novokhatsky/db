@@ -2,7 +2,7 @@
 
 namespace Novokhatsky\Db;
 
-Class Db
+Class DbConnect
 {
     public $errInfo = [];
 
