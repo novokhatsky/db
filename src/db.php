@@ -1,17 +1,18 @@
 <?php
 
-namespace novokhatsky\db;
+namespace Novokhatsky\Db;
 
-Class Db
+Class DbConnector
 {
     public $errInfo = [];
 
     private $db;
 
-    function __construct($config)
+    public function __construct($config)
     {
-        $dsn = "mysql:host={$config['srv']};dbname={$config['db']};charset=utf8";
-        $this->db = new \PDO($dsn, $config['user'], $config['pass']);
+
+        $dsn = 'mysql:host=' . $config::SRV . ';dbname=' . $config::DB . ';charset=utf8';
+        $this->db = new \PDO($dsn, $config::USER, $config::PASS);
 
         return $this;
     }
@@ -34,6 +35,22 @@ Class Db
         $stmt->execute($params);
 
         return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    function getValue($query, $params = [])
+    {
+        $stmt = $this
+                    ->db
+                    ->prepare($query);
+        $stmt->execute($params);
+
+        $result = $stmt->fetch(\PDO::FETCH_NUM);
+
+        if ($result) {
+            return $result[0];
+        }
+
+        return false;
     }
 
     function insertData($query, $params = [])
