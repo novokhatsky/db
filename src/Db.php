@@ -1,6 +1,6 @@
 <?php
 
-namespace novokhatsky\Db;
+namespace Novokhatsky\Db;
 
 Class Db
 {
