@@ -1,8 +1,8 @@
 <?php
 
-namespace Novokhatsky\Db;
+namespace novokhatsky\Db;
 
-Class DbConnector
+Class Db
 {
     public $errInfo = [];
 
