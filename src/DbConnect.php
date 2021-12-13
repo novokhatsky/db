@@ -1,26 +1,41 @@
 <?php
 
-namespace Novokhatsky\Db;
+namespace Novokhatsky;
 
 Class DbConnect
 {
     public $errInfo = [];
 
-    private $db;
+    private $handler;
+    private $dsn;
+    private $user;
+    private $pass;
 
     public function __construct($config)
     {
+        $this->dsn = 'mysql:host=' . $config['srv'] . ';dbname=' . $config['db'] . ';charset=utf8';
+        $this->user = $config['user'];
+        $this->pass = $config['pass'];
+    }
 
-        $dsn = 'mysql:host=' . $config::SRV . ';dbname=' . $config::DB . ';charset=utf8';
-        $this->db = new \PDO($dsn, $config::USER, $config::PASS);
+    private function connector()
+    {
+        if (!$this->handler) {
+            $this->handler = new \PDO($this->dsn, $this->user, $this->pass);
+        }
 
-        return $this;
+        return $this->handler;
+    }
+
+    function prepare($query)
+    {
+        return $this->connector()->prepare($query);
     }
 
     function getList($query, $params = [])
     {
         $stmt = $this
-                    ->db
+                    ->connector()
                     ->prepare($query);
         $stmt->execute($params);
 
@@ -30,7 +45,7 @@ Class DbConnect
     function getRow($query, $params = [])
     {
         $stmt = $this
-                    ->db
+                    ->connector()
                     ->prepare($query);
         $stmt->execute($params);
 
@@ -40,7 +55,7 @@ Class DbConnect
     function getValue($query, $params = [])
     {
         $stmt = $this
-                    ->db
+                    ->connector()
                     ->prepare($query);
         $stmt->execute($params);
 
@@ -56,13 +71,13 @@ Class DbConnect
     function insertData($query, $params = [])
     {
         $stmt = $this
-                    ->db
+                    ->connector()
                     ->prepare($query);
 
         if ($stmt->execute($params)) {
 
             return $this
-                        ->db
+                        ->connector()
                         ->lastInsertId();
         } else {
             $this->errInfo = $stmt->errorInfo();
@@ -74,7 +89,7 @@ Class DbConnect
     function updateData($query, $params = [])
     {
         $stmt = $this
-                    ->db
+                    ->connector()
                     ->prepare($query);
 
         if ($stmt->execute($params)) {
@@ -89,16 +104,16 @@ Class DbConnect
 
     function beginTransaction()
     {
-        $this->db->beginTransaction();
+        $this->connector()->beginTransaction();
     }
 
     function rollBack()
     {
-        $this->db->rollBack();
+        $this->connector()->rollBack();
     }
 
     function commit()
     {
-        $this->db->commit();
+        $this->connector()->commit();
     }
 }
